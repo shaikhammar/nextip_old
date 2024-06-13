@@ -1,0 +1,15 @@
+model Currency {
+    id           Int            @id @default(autoincrement()) @db.UnsignedInt
+    code         String         @unique @db.VarChar(3)
+    name         String?        @db.VarChar(50)
+    exchangeRate ExchangeRate[]
+    client       Client[]
+}
+
+model ExchangeRate {
+    id         Int      @id @default(autoincrement()) @db.UnsignedInt
+    date       DateTime @db.Timestamp(6)
+    rate       Decimal  @db.Decimal(9, 2)
+    currencyId Int      @db.UnsignedInt
+    currency   Currency @relation(fields: [currencyId], references: [id], onDelete: Cascade)
+}

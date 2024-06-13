@@ -1,0 +1,27 @@
+// TODO: Add fields currency, balance
+
+model Client {
+    id         Int          @id @default(autoincrement()) @db.UnsignedInt
+    name       String?      @db.VarChar(50)
+    code       String       @unique @db.VarChar(6)
+    address    String?      @db.LongText
+    email      String?      @db.VarChar(50)
+    balance    Decimal      @default(0.00) @db.Decimal(9, 2)
+    createdAt  DateTime?    @default(now()) @db.Timestamp(6)
+    updatedAt  DateTime?    @updatedAt @db.Timestamp(6)
+    isDisabled Boolean      @default(false)
+    disabledAt DateTime?    @db.Timestamp(6)
+    isDeleted  Boolean      @default(false)
+    deletedAt  DateTime?    @db.Timestamp(6)
+    currencyId Int          @db.UnsignedInt
+    currency   Currency     @relation(fields: [currencyId], references: [id], onDelete: Cascade)
+    clientNote ClientNote[]
+}
+
+model ClientNote {
+    id        Int       @id @default(autoincrement()) @db.UnsignedInt
+    note      String    @db.LongText
+    createdAt DateTime? @default(now()) @db.Timestamp(6)
+    clientId  Int       @db.UnsignedInt
+    client    Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}

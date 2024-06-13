@@ -222,7 +222,7 @@ export default async function DashboardPage() {
           <CardContent className="grid gap-8">
             <div className="flex items-center gap-4">
               <Avatar className="hidden h-9 w-9 sm:flex">
-                <AvatarFallback>OM</AvatarFallback>
+                <AvatarFallback className="text-xs">ICON</AvatarFallback>
               </Avatar>
               <div className="grid gap-1">
                 <p className="text-sm font-medium leading-none">

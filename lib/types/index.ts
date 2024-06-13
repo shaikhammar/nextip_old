@@ -37,7 +37,7 @@ export const clientFormSchema = z
             .string()
             .min(5, { message: "Please enter the address of the client." }),
         clientCurrency: z.string().min(3, { message: "Please select a currency." })
-    }) //satisfies z.Schema<Prisma.ClientUncheckedCreateInput>
+    })
 
 
 export const currencyFormSchema = z
