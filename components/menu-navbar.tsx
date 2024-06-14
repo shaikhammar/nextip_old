@@ -74,13 +74,13 @@ export default function MenuNavbar() {
                 <NavigationMenuContent className="grid w-[200px] gap-3 p-4 md:w-[200px] md:grid-rows-2 lg:w-[200px] ">
                   <NavigationMenuLink
                     className="flex h-full w-full select-none flex-row justify-start rounded-md p-1 no-underline outline-none hover:shadow-md"
-                    href="/clients/create"
+                    href="/client/create"
                   >
                     Create Client
                   </NavigationMenuLink>
                   <NavigationMenuLink
                     className="flex h-full w-full select-none flex-row justify-start rounded-md p-1 no-underline outline-none hover:shadow-md"
-                    href="/clients"
+                    href="/client"
                   >
                     View Clients
                   </NavigationMenuLink>

@@ -1,7 +1,7 @@
 "use client";
 
+import { Client } from "@/lib/types/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,10 +12,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ModifiedClient } from "@/actions/client.actions";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-export const clientColumns: ColumnDef<ModifiedClient>[] = [
+export const clientColumns: ColumnDef<Client>[] = [
   {
     accessorKey: "code",
     // enableColumnFilter: true,
@@ -64,7 +64,16 @@ export const clientColumns: ColumnDef<ModifiedClient>[] = [
     },
   },
   {
-    accessorKey: "balance",
+    // accessorKey: "currency.code",
+    id: "balance",
+    accessorFn: (client) => {
+      const balanceNumber = parseFloat(client.balance.toString());
+      const formattedBalance = balanceNumber.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+      return `${client.currency.code} ${formattedBalance}`;
+    },
     header: ({ column }) => {
       return (
         <div className="text-right">
@@ -78,13 +87,9 @@ export const clientColumns: ColumnDef<ModifiedClient>[] = [
         </div>
       );
     },
-    cell: ({ row }) => {
-      return (
-        <div className="text-right mr-4 font-medium">
-          {row.getValue("balance")}
-        </div>
-      );
-    },
+    cell: (props) => (
+      <div className="text-right mr-4 font-medium">{`${props.getValue()}`}</div>
+    ),
   },
   {
     id: "actions",
@@ -103,7 +108,7 @@ export const clientColumns: ColumnDef<ModifiedClient>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() =>
-                navigator.clipboard.writeText(client.id.toString())
+                navigator.clipboard.writeText(client.clientId.toString())
               }
             >
               Copy client ID

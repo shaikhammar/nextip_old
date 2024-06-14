@@ -1,25 +1,6 @@
 import db from "@/lib/db";
-import { Client } from "./client.actions"
-
-export interface Currrency {
-    id: number,
-    code: string,
-    name: string | null,
-    exchangeRate?: ExchangeRate[] | null
-    client?: Client[] | null
-}
-
-export interface ExchangeRate {
-    id: number,
-    date: string,
-    rate: number,
-    currencyId: number
-}
-
-interface ActionResult {
-    error?: string;
-    currencies?: Currrency[];
-}
+import { ActionResult } from ".";
+import { Currrency } from "@/lib/types";
 
 export async function getCurrencies(): Promise<ActionResult> {
     let currencies: Currrency[]
@@ -32,7 +13,7 @@ export async function getCurrencies(): Promise<ActionResult> {
         }
     }
     return {
-        currencies: currencies
+        data: JSON.stringify(currencies)
     }
 }
 

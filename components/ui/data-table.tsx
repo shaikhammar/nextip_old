@@ -25,7 +25,7 @@ import {
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data?: TData[] | null;
+  data: TData[];
 }
 
 export function DataTable<TData, TValue>({
@@ -101,7 +101,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-12 text-center"
                 >
                   No results.
                 </TableCell>

@@ -3,6 +3,7 @@ import { Inter as FontSans } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "../globals.css";
 import MenuNavbar from "@/components/menu-navbar";
+import { Toaster } from "@/components/ui/toaster";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default function AuthRootLayout({
       <div className="flex min-h-screen w-full flex-col">
         <MenuNavbar />
         {children}
+        <Toaster />
       </div>
     </section>
   );

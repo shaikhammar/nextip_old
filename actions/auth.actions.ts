@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
 import { lucia } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { generateIdFromEntropySize } from "lucia";
-import { loginFormSchema, signUpFormSchema } from "@/lib/types";
+import { loginFormSchema, signUpFormSchema } from "@/lib/form-types";
 import { Prisma } from '@prisma/client';
 import { cache } from "react";
 import type { Session, User } from "lucia";

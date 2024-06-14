@@ -1,5 +1,5 @@
 model Company {
-    id          Int       @id @default(autoincrement()) @db.UnsignedInt
+    companyId   Int       @id @default(autoincrement()) @db.UnsignedInt
     name        String
     displayName String?
     address     String?   @db.LongText

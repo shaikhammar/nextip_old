@@ -2,63 +2,22 @@
 
 import db from "@/lib/db";
 import { Prisma } from '@prisma/client'
-import { Currrency } from "./currency.actions";
+import { ActionResult } from ".";
+import { Client, ClientInitializer, ClientMutator } from "@/lib/types/client";
+import { clientFormSchema } from "@/lib/form-types";
+import { z } from "zod";
+import { revalidatePath } from "next/cache";
 
-export interface ClientNote {
-    id: number,
-    note: string,
-    createdAt: Date | null,
-    clientId: number
-}
-
-export interface Client {
-    id: number,
-    name: string | null,
-    code: string,
-    address: string | null,
-    email: string | null,
-    balance: Prisma.Decimal | null,
-    currency?: Currrency | null,
-    createdAt: Date | null,
-    updatedAt: Date | null,
-    isDisabled: boolean,
-    disabledAt: Date | null,
-    isDeleted: boolean,
-    deletedAt: Date | null,
-    clientNote?: ClientNote[] | null
-}
-
-export type ModifiedClient = {
-    id: number;
-    name: string | null;
-    code: string;
-    balance: string | null;
-};
-
-interface ActionResult {
-    error?: any;
-    data?: string | null;
-}
-
-export async function getClients(withNotes: boolean = false): Promise<ActionResult> {
+export async function getClients(): Promise<ActionResult> {
     let clients: Client[]
     try {
-        if (withNotes) {
-            clients = await db.client.findMany({
-                include: {
-                    currency: true,
-                    clientNote: true
-                }
-            })
-        } else {
-            clients = await db.client.findMany({
-                include: {
-                    currency: true,
-                }
-            })
-        }
+        clients = await db.client.findMany({
+            include: {
+                currency: true
+            }
+        })
     } catch (error: any) {
-        console.log(error)
+        // console.log(error)
         return {
             error: error.message || "Error fetching clients. Please try again after sometime."
         }
@@ -68,85 +27,162 @@ export async function getClients(withNotes: boolean = false): Promise<ActionResu
     }
 }
 
-export async function getClientNotes(clientId: number): Promise<ActionResult> {
-    let clientNotes: ClientNote[]
+export async function getClient(clientId: number): Promise<ActionResult> {
+    let client: ClientMutator | null
     try {
-        clientNotes = await db.clientNote.findMany({
+        client = await db.client.findUnique({
             where: {
                 clientId: clientId
+            },
+            include: {
+                currency: true
             }
         })
+        // console.log(client)
     } catch (error: any) {
-        console.log(error)
+        // console.log(error)
         return {
-            error: error.message || "Error fetching client notes. Please try again after sometime."
+            error: error.message || "Error fetching clients. Please try again after sometime."
         }
     }
     return {
-        data: JSON.stringify(clientNotes)
+        data: JSON.stringify(client)
     }
 }
 
-export async function setClient(newClient: Client) {
+// export async function getClientNotes(clientId: number): Promise<ActionResult> {
+//     let clientNotes: ClientNote[]
+//     try {
+//         clientNotes = await db.clientNote.findMany({
+//             where: {
+//                 clientId: clientId
+//             }
+//         })
+//     } catch (error: any) {
+//         console.log(error)
+//         return {
+//             error: error.message || "Error fetching client notes. Please try again after sometime."
+//         }
+//     }
+//     return {
+//         data: JSON.stringify(clientNotes)
+//     }
+// }
 
-    let client: Prisma.ClientCreateInput
+export async function setClient(newClient: z.infer<typeof clientFormSchema>, clientId?: number | null) {
 
-    client = {
-        name: newClient.name,
-        code: newClient.code,
-        address: newClient.address,
-        email: newClient.email,
-        currency: {
-            connect: {
-                code: newClient.currency?.code
+    let existingClient
+    if (clientId) {
+        existingClient = await getClient(clientId!)
+    }
+    if (existingClient) {
+        let client: Prisma.ClientUpdateInput
+        client = {
+            name: newClient.name,
+            code: newClient.code,
+            address: newClient.address,
+            email: newClient.email,
+            currency: {
+                connect: {
+                    code: newClient.currency
+                }
+            }
+        }
+        try {
+            const updatedClient = await db.client.update({
+                where: {
+                    clientId: clientId!
+                },
+                data: client
+            })
+            revalidatePath("/client");
+            return {
+                success: `${updatedClient.name} updated successfully.`
+            }
+        } catch (error: any) {
+            // console.log(error)
+            return {
+                error: error.message || "Error adding client note. Please try again after sometime."
+            }
+        }
+    } else {
+        let client: Prisma.ClientCreateInput
+        // console.log(newClient)
+        client = {
+            name: newClient.name,
+            code: newClient.code,
+            address: newClient.address,
+            email: newClient.email,
+            currency: {
+                connect: {
+                    code: newClient.currency
+                }
+            }
+        }
+        try {
+            const createdClient = await db.client.create({
+                data: client
+            })
+            revalidatePath("/client");
+            return {
+                success: `${createdClient.name} created successfully.`
+            }
+        } catch (error: any) {
+            // console.log(error)
+            return {
+                error: error.message || "Error adding client note. Please try again after sometime."
             }
         }
     }
-
-    try {
-        await db.client.create({
-            data: client
-        })
-    } catch (error: any) {
-        console.log(error)
-        return {
-            error: error.message || "Error adding client note. Please try again after sometime."
-        }
-    }
 }
 
-export async function setClientNotes(clientId: number, note: string) {
+// export async function setClientNotes(clientId: number, note: string) {
 
-    try {
-        await db.clientNote.create({
-            data: {
-                clientId: clientId,
-                note: note
-            }
-        })
-    } catch (error: any) {
-        console.log(error)
-        return {
-            error: error.message || "Error adding client note. Please try again after sometime."
-        }
-    }
-}
+//     try {
+//         await db.clientNote.create({
+//             data: {
+//                 clientId: clientId,
+//                 note: note
+//             }
+//         })
+//     } catch (error: any) {
+//         console.log(error)
+//         return {
+//             error: error.message || "Error adding client note. Please try again after sometime."
+//         }
+//     }
+// }
 
-function formatBalance(balance: Prisma.Decimal, currencyCode: string): string {
-    // Convert balance to number and format with commas and two decimal places
-    const balanceNumber = parseFloat(balance.toString());
-    const formattedBalance = balanceNumber.toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-    });
-    return `${currencyCode} ${formattedBalance}`;
-}
+// function formatBalance(balance: Prisma.Decimal, currencyCode: string): string {
+//     // Convert balance to number and format with commas and two decimal places
+//     const balanceNumber = parseFloat(balance.toString());
+//     const formattedBalance = balanceNumber.toLocaleString('en-US', {
+//         minimumFractionDigits: 2,
+//         maximumFractionDigits: 2,
+//     });
+//     return `${currencyCode} ${formattedBalance}`;
+// }
 
-export async function getModifiedClients(clients: Client[]) {
-    return clients.map(client => ({
-        id: client.id,
-        name: client.name,
-        code: client.code,
-        balance: client.balance && client.currency ? formatBalance(client.balance, client.currency.code) : null,
-    }));
-}
+// export async function getModifiedClients(clients: Client[]) {
+//     return clients.map(client => ({
+//         clientId: client.clientId,
+//         name: client.name,
+//         code: client.code,
+//         balance: client.balance && client.currency ? formatBalance(client.balance, client.currency.code) : null,
+//     }));
+// }
+
+// export async function getModeledClient(formData: z.infer<typeof clientFormSchema>): Promise<Client> {
+//     const clientCurrency: Currrency = {
+//         code: formData.clientCurrency
+//         name: null
+//     }
+//     return {
+//         name: formData.clientName,
+//         code: formData.clientCode,
+//         address: formData.clientAddress,
+//         email: null, // Default value as it's not in form data
+//         balance: null, // Default value as it's not in form data
+//         currency: clientCurrency,
+//     };
+// }
