@@ -3,7 +3,7 @@
 import db from "@/lib/db"
 
 export interface Company {
-    id: number,
+    companyId: number,
     name: string,
     displayName: string | null,
     address: string | null,
@@ -18,7 +18,7 @@ export interface Company {
 
 interface ActionResult {
     error?: string;
-    companies?: Company[];
+    companies?: Array<Company>;
 }
 
 export async function getCompanies(): Promise<ActionResult> {

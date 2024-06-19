@@ -4,10 +4,11 @@ import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { clientFormSchema } from "@/lib/form-types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { setClient } from "@/actions/client.actions";
-import { Currency, currency } from "@/lib/types/currency";
+import { Currency } from "@/lib/types/currency";
+import { ClientMutator } from "@/lib/types/client";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -44,25 +45,47 @@ import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import { toast } from "./ui/use-toast";
-import {
-  Client,
-  ClientInitializer,
-  ClientMutator,
-  clientInitializer,
-} from "@/lib/types/client";
-import { useRouter } from "next/navigation";
-import { revalidatePath } from "next/cache";
-// import AdhocCurrencyForm from "./adhoc-currency-form";
+import AdhocCurrencyForm from "./adhoc-currency-form";
+import { trpc } from "@/app/_trpc/client";
+
+export const clientFormSchema = z.object({
+  name: z
+    .string()
+    .max(50, {
+      message: "Client name too large. Please use below address field.",
+    })
+    .optional(),
+  code: z
+    .string()
+    .min(3, { message: "Client code must be at least 3 characters long." })
+    .max(6, {
+      message:
+        "Client code cannot be more than 6 characters long. Please use code with 6 character or less.",
+    }),
+  address: z
+    .string()
+    .min(5, { message: "Please enter the address of the client." }),
+  email: z
+    .string()
+    .email({ message: "Invalid email. Please enter a valid email." })
+    .optional(),
+  currency: z.string().min(3, { message: "Please select a currency." }),
+});
 
 export default function ClientForm({
-  currencies,
+  formOpen,
+  onFormClose,
   client,
   clientId,
 }: {
-  currencies: Currency[];
+  formOpen?: any;
+  onFormClose?: any;
   client?: ClientMutator | null;
   clientId?: number | null;
 }) {
+  const getCurrencies = trpc.getCurrencies.useQuery();
+  const currencies: Currency[] = getCurrencies.data!;
+
   const router = useRouter();
   //State for Add currency Modal
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -73,7 +96,7 @@ export default function ClientForm({
   //State for popover
   const [open, setOpen] = useState(false);
 
-  let clientValues: Client;
+  // let clientValues: Client;
 
   // ...
   // 1. Define your form.
@@ -109,7 +132,7 @@ export default function ClientForm({
         variant: "default",
         title: response.success,
       });
-
+      onFormClose();
       router.push("/client");
     }
   }
@@ -213,7 +236,7 @@ export default function ClientForm({
                                     )}
                                   >
                                     {field.value
-                                      ? currencies.find(
+                                      ? currencies?.find(
                                           (currency) =>
                                             currency.code === field.value
                                         )?.name
@@ -229,8 +252,28 @@ export default function ClientForm({
                                     <CommandEmpty>
                                       No currency found.
                                     </CommandEmpty>
-                                    <CommandGroup>
-                                      {currencies.map((currency) => (
+                                    <CommandGroup
+                                      className="text-center"
+                                      heading={
+                                        <Button
+                                          variant="ghost"
+                                          onClick={handleDialogOpen}
+                                          type="button"
+                                        >
+                                          Add Currency
+                                        </Button>
+                                      }
+                                    >
+                                      <CommandItem className="flex justify-center">
+                                        {/* <Button
+                                          variant="ghost"
+                                          onClick={handleDialogOpen}
+                                          type="button"
+                                        >
+                                          Add Currency
+                                        </Button> */}
+                                      </CommandItem>
+                                      {currencies?.map((currency) => (
                                         <CommandItem
                                           value={currency.code}
                                           key={currency.code}
@@ -284,13 +327,18 @@ export default function ClientForm({
               </div>
               <Button type="submit">Submit</Button>
               <Link href="/client">
-                <Button type="button" className="ml-3" variant={"outline"}>
+                <Button
+                  type="button"
+                  className="ml-3"
+                  variant={"outline"}
+                  onClick={onFormClose}
+                >
                   Cancel
                 </Button>
               </Link>
             </form>
           </Form>
-          {/* <AdhocCurrencyForm open={isDialogOpen} onClose={handleDialogClose} /> */}
+          <AdhocCurrencyForm open={isDialogOpen} onClose={handleDialogClose} />
         </CardContent>
       </Card>
     </>

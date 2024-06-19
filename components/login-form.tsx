@@ -4,7 +4,6 @@ import { z } from "zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginFormSchema } from "@/lib/form-types";
 import { login } from "@/actions/auth.actions";
 
 import { Button } from "@/components/ui/button";
@@ -19,6 +18,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+
+
+export const loginFormSchema = z.object({
+  email: z.string().email({ message: "Invalid email. Please enter a valid email." }),
+  password: z
+      .string()
+      .min(8, { message: "Password must be 8 characters long." }),
+})
 
 export function LoginForm() {
   const form = useForm<z.infer<typeof loginFormSchema>>({

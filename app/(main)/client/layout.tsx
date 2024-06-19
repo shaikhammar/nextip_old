@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import { cn } from "@/lib/utils";
-import "../globals.css";
-import MenuNavbar from "@/components/menu-navbar";
-import { Toaster } from "@/components/ui/toaster";
-import { getCompanies } from "@/actions/company.actions";
+import "@/app/globals.css";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -16,12 +13,10 @@ export const metadata: Metadata = {
   description: "Invoice Management app",
 };
 
-export default async function AuthRootLayout({
-  children,
-}: Readonly<{
+export default async function ClientRootLayout(props: {
   children: React.ReactNode;
-}>) {
-  const { companies } = await getCompanies();
+  modal: React.ReactNode;
+}) {
   return (
     <section
       className={cn(
@@ -29,12 +24,9 @@ export default async function AuthRootLayout({
         fontSans.variable
       )}
     >
-      <div className="flex min-h-screen w-full flex-col">
-        <MenuNavbar companies={companies!} />
-        {children}
-        <Toaster />
-        {/* <Footer /> */}
-      </div>
+      {props.children}
+      {props.modal}
+      <div id="modal-root" />
     </section>
   );
 }

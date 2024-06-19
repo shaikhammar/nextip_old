@@ -13,16 +13,6 @@ export default async function CreateClientPage() {
     return redirect("/");
   }
 
-  const result = await getCurrencies();
-
-  let currencies: Currency[];
-
-  if (result?.data) {
-    currencies = JSON.parse(result.data);
-  } else {
-    currencies = [];
-  }
-
   return (
     <>
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -30,7 +20,7 @@ export default async function CreateClientPage() {
           <BreadcrumbNav />
         </div>
         <div className="mx-auto">
-          <ClientForm currencies={currencies} />
+          <ClientForm />
         </div>
       </main>
 

@@ -1,9 +1,11 @@
+"use server"
 import db from "@/lib/db";
 import { ActionResult } from ".";
-import { Currrency } from "@/lib/types";
+import { currencyFormSchema, Currency } from "@/lib/types/currency";
+import { z } from "zod";
 
 export async function getCurrencies(): Promise<ActionResult> {
-    let currencies: Currrency[]
+    let currencies: Currency[]
     try {
         currencies = await db.currency.findMany()
     } catch (error: any) {
@@ -17,7 +19,7 @@ export async function getCurrencies(): Promise<ActionResult> {
     }
 }
 
-export async function setCurrency(newCurrency: Currrency) {
+export async function setCurrency(newCurrency: z.infer<typeof currencyFormSchema>) {
 
     try {
         await db.currency.create({

@@ -3,8 +3,7 @@
 import db from "@/lib/db";
 import { Prisma } from '@prisma/client'
 import { ActionResult } from ".";
-import { Client, ClientInitializer, ClientMutator } from "@/lib/types/client";
-import { clientFormSchema } from "@/lib/form-types";
+import { Client, ClientMutator, clientFormSchema } from "@/lib/types/client";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 

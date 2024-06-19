@@ -4,7 +4,6 @@ import { z } from "zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signUpFormSchema } from "@/lib/form-types";
 import { signup } from "@/actions/auth.actions";
 
 import { Button } from "@/components/ui/button";
@@ -20,6 +19,22 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ToastAction } from "@radix-ui/react-toast";
+
+export const signUpFormSchema = z.object({
+  firstName: z.string().min(2, { message: 'First name must contain more than 2 characters.' }).max(50),
+  lastName: z.string().min(2, { message: 'Last name must contain more than 2 characters.' }).max(50),
+  email: z.string().email({ message: "Invalid email. Please enter a valid email." }),
+  password: z
+      .string()
+      .min(8, { message: "Password must be 8 characters long." }),
+  confirmPassword: z
+      .string()
+      .min(8, { message: "Password must be 8 characters long." }),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match.",
+  path: ["confirmPassword"],
+});
+
 
 export function SignupForm() {
   const form = useForm<z.infer<typeof signUpFormSchema>>({

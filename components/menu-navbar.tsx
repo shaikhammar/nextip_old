@@ -46,8 +46,10 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import { logout } from "@/actions/auth.actions";
+import { Company } from "@/actions/company.actions";
+import CompaniesSelector from "./companies-selector";
 
-export default function MenuNavbar() {
+export default function MenuNavbar({ companies }: { companies: Company[] }) {
   return (
     <>
       <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -159,7 +161,10 @@ export default function MenuNavbar() {
           </SheetContent>
         </Sheet>
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-          <form className="ml-auto flex-1 sm:flex-initial">
+        <div className="ml-auto flex-1 sm:flex-initial">
+          <CompaniesSelector companies={companies} />
+        </div>
+          {/* <form className="ml-auto flex-1 sm:flex-initial">
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
@@ -168,7 +173,7 @@ export default function MenuNavbar() {
                 className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
               />
             </div>
-          </form>
+          </form> */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
