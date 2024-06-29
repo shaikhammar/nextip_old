@@ -1,25 +1,29 @@
 model Client {
-    clientId   Int          @id @default(autoincrement()) @db.UnsignedInt
-    name       String?      @db.VarChar(50)
-    code       String       @unique @db.VarChar(6)
-    address    String?      @db.LongText
-    email      String?      @db.VarChar(50)
-    balance    Decimal      @default(0.00) @db.Decimal(9, 2)
-    createdAt  DateTime?    @default(now()) @db.Timestamp(6)
-    updatedAt  DateTime?    @updatedAt @db.Timestamp(6)
-    isDisabled Boolean      @default(false)
-    disabledAt DateTime?    @db.Timestamp(6)
-    isDeleted  Boolean      @default(false)
-    deletedAt  DateTime?    @db.Timestamp(6)
-    currencyId Int          @db.UnsignedInt
-    currency   Currency     @relation(fields: [currencyId], references: [currencyId], onDelete: Cascade)
-    clientNote ClientNote[]
+  clientId   Int          @id @default(autoincrement()) @db.UnsignedInt
+  name       String?      @db.VarChar(50)
+  code       String       @unique @db.VarChar(6)
+  address    String?      @db.LongText
+  email      String?      @db.VarChar(50)
+  balance    Decimal      @default(0.00) @db.Decimal(9, 2)
+  createdAt  DateTime?    @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime?    @updatedAt @db.Timestamp(6)
+  isDisabled Boolean      @default(false)
+  disabledAt DateTime?    @db.Timestamp(6)
+  isDeleted  Boolean      @default(false)
+  deletedAt  DateTime?    @db.Timestamp(6)
+  currencyId String
+  currency   Currency     @relation(fields: [currencyId], references: [currencyId], onDelete: Cascade)
+  companyId  String
+  company    Company      @relation(fields: [companyId], references: [companyId], onDelete: Cascade)
+  clientNote ClientNote[]
+  invoice    Invoice[]
+  Payment    Payment[]
 }
 
 model ClientNote {
-    clientNoteId Int       @id @default(autoincrement()) @db.UnsignedInt
-    note         String    @db.LongText
-    createdAt    DateTime? @default(now()) @db.Timestamp(6)
-    clientId     Int       @db.UnsignedInt
-    client       Client    @relation(fields: [clientId], references: [clientId], onDelete: Cascade)
+  clientNoteId Int       @id @default(autoincrement()) @db.UnsignedInt
+  note         String    @db.LongText
+  createdAt    DateTime? @default(now()) @db.Timestamp(6)
+  clientId     Int       @db.UnsignedInt
+  client       Client    @relation(fields: [clientId], references: [clientId], onDelete: Cascade)
 }

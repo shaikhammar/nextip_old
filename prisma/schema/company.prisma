@@ -1,13 +1,17 @@
 model Company {
-    companyId   Int       @id @default(autoincrement()) @db.UnsignedInt
-    name        String
-    displayName String?
-    address     String?   @db.LongText
-    logo        String?
-    createdAt   DateTime? @default(now()) @db.Timestamp(6)
-    updatedAt   DateTime? @updatedAt @db.Timestamp(6)
-    isDisabled  Boolean   @default(false)
-    disabledAt  DateTime? @db.Timestamp(6)
-    isDeleted   Boolean   @default(false)
-    deletedAt   DateTime? @db.Timestamp(6)
+  companyId   String        @id @default(cuid())
+  name        String        @unique
+  displayName String?
+  address     String?       @db.LongText
+  logo        String?
+  createdAt   DateTime?     @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime?     @updatedAt @db.Timestamp(6)
+  isDisabled  Boolean       @default(false)
+  disabledAt  DateTime?     @db.Timestamp(6)
+  isDeleted   Boolean       @default(false)
+  deletedAt   DateTime?     @db.Timestamp(6)
+  client      Client[]
+  invoice     Invoice[]
+  payment     Payment[]
+  bankAccount BankAccount[]
 }

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import Link from "next/link";
 
 export const clientColumns: ColumnDef<Client>[] = [
   {
@@ -114,7 +115,9 @@ export const clientColumns: ColumnDef<Client>[] = [
               Copy client ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View client</DropdownMenuItem>
+            <Link href={`/client/${client.clientId}/edit`}>
+              <DropdownMenuItem className="cursor-pointer">Edit client</DropdownMenuItem>
+            </Link>
             <DropdownMenuItem>View client invoices</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

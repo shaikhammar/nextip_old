@@ -1,0 +1,40 @@
+model Payment {
+  paymentId      String           @id @default(cuid())
+  amount         Decimal          @db.Decimal(10, 2)
+  exchangeRateId String           @unique
+  exchangeRate   ExchangeRate     @relation(fields: [exchangeRateId], references: [exchangeRateId], onDelete: NoAction, onUpdate: NoAction)
+  paymentDate    DateTime         @db.Timestamp(6)
+  transactionId  String?
+  status         PaymentStatus
+  notes          String?          @db.LongText
+  clientId       Int              @db.UnsignedInt
+  client         Client           @relation(fields: [clientId], references: [clientId], onDelete: NoAction, onUpdate: NoAction)
+  bankAccountId  String
+  bankAccount    BankAccount      @relation(fields: [bankAccountId], references: [bankAccountId], onDelete: NoAction, onUpdate: NoAction)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  companyId      String
+  company        Company          @relation(fields: [companyId], references: [companyId], onDelete: NoAction, onUpdate: NoAction)
+  paymentInvoice PaymentInvoice[]
+}
+
+model PaymentInvoice {
+  paymentInvoiceId String   @id @default(cuid())
+  paymentId        String
+  payment          Payment  @relation(fields: [paymentId], references: [paymentId], onDelete: NoAction, onUpdate: NoAction)
+  invoiceId        String
+  invoice          Invoice  @relation(fields: [invoiceId], references: [invoiceId], onDelete: NoAction, onUpdate: NoAction)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+enum PaymentStatus {
+  Pending
+  Cancelled
+  Failed
+  Completed
+  PartiallyRefunded
+  Refunded
+  PartiallyUnpaid
+  Deleted
+}

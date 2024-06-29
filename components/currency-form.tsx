@@ -15,16 +15,22 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { CurrencyMutator, currencyFormSchema } from "@/lib/types/currency";
+import { Currency } from "@/lib/types/currency";
 import { setCurrency } from "@/actions/currency.actions";
 import { toast } from "./ui/use-toast";
+
+export const currencyFormSchema = z.object({
+  name: z.string().min(3, { message: "Currency name too small. Please check." }),
+  code: z.string().length(3, { message: "Use 3 character ISO currency codes." })
+})
+
 
 export default function CurrencyForm({
   onCurrencyFormSubmit,
   currency,
 }: {
   onCurrencyFormSubmit: any;
-  currency?: CurrencyMutator | null;
+  currency?: Currency | null;
 }) {
   // ...
   // 1. Define your form.

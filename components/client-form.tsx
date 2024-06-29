@@ -7,7 +7,7 @@ import { z } from "zod";
 import { useState } from "react";
 import { setClient } from "@/actions/client.actions";
 import { Currency } from "@/lib/types/currency";
-import { ClientMutator } from "@/lib/types/client";
+import { Client } from "@/lib/types/client";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -80,7 +80,7 @@ export default function ClientForm({
 }: {
   formOpen?: any;
   onFormClose?: any;
-  client?: ClientMutator | null;
+  client?: Client | null;
   clientId?: number | null;
 }) {
   const getCurrencies = trpc.getCurrencies.useQuery();

@@ -1,0 +1,25 @@
+model BankAccount {
+  bankAccountId  String          @id @default(cuid())
+  type           BankAccountType? @default(Checking)
+  name           String
+  code           String
+  openingBalance Decimal         @default(0.00) @db.Decimal(10, 2)
+  balance        Decimal         @default(0.00) @db.Decimal(10, 2)
+  isDisabled     Boolean         @default(false)
+  disabledAt     DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime?        @updatedAt
+  payment        Payment[]
+  companyId      String
+  company        Company         @relation(fields: [companyId], references: [companyId], onDelete: NoAction, onUpdate: NoAction)
+  currencyId     String
+  currency       Currency        @relation(fields: [currencyId], references: [currencyId], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum BankAccountType {
+  Checking
+  Savings
+  Paypal
+  Venmo
+  Other
+}

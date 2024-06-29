@@ -1,20 +1,15 @@
 "use client";
-
+import { logout } from "@/actions/auth.actions";
+import { Company } from "@/actions/company.actions";
 import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   File,
-  Calendar,
   CircleUser,
-  CreditCard,
   Menu,
-  Package2,
-  Search,
   SendHorizontal,
-  Settings,
-  Smile,
   User,
   Users,
   Files,
@@ -39,14 +34,10 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
-import { logout } from "@/actions/auth.actions";
-import { Company } from "@/actions/company.actions";
 import CompaniesSelector from "./companies-selector";
 
 export default function MenuNavbar({ companies }: { companies: Company[] }) {
@@ -74,18 +65,16 @@ export default function MenuNavbar({ companies }: { companies: Company[] }) {
                   <NavigationMenuTrigger>Clients</NavigationMenuTrigger>
                 </NavigationMenuLink>
                 <NavigationMenuContent className="grid w-[200px] gap-3 p-4 md:w-[200px] md:grid-rows-2 lg:w-[200px] ">
-                  <NavigationMenuLink
-                    className="flex h-full w-full select-none flex-row justify-start rounded-md p-1 no-underline outline-none hover:shadow-md"
-                    href="/client/create"
-                  >
-                    Create Client
-                  </NavigationMenuLink>
-                  <NavigationMenuLink
-                    className="flex h-full w-full select-none flex-row justify-start rounded-md p-1 no-underline outline-none hover:shadow-md"
-                    href="/client"
-                  >
-                    View Clients
-                  </NavigationMenuLink>
+                  <Link href="/client/create" legacyBehavior passHref>
+                    <NavigationMenuLink className="flex h-full w-full select-none flex-row justify-start rounded-md p-1 no-underline outline-none hover:shadow-md">
+                      Create Client
+                    </NavigationMenuLink>
+                  </Link>
+                  <Link href="/client" legacyBehavior passHref>
+                    <NavigationMenuLink className="flex h-full w-full select-none flex-row justify-start rounded-md p-1 no-underline outline-none hover:shadow-md">
+                      View Clients
+                    </NavigationMenuLink>
+                  </Link>
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
@@ -161,9 +150,9 @@ export default function MenuNavbar({ companies }: { companies: Company[] }) {
           </SheetContent>
         </Sheet>
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <div className="ml-auto flex-1 sm:flex-initial">
-          <CompaniesSelector companies={companies} />
-        </div>
+          <div className="ml-auto flex-1 sm:flex-initial">
+            <CompaniesSelector companies={companies} />
+          </div>
           {/* <form className="ml-auto flex-1 sm:flex-initial">
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />

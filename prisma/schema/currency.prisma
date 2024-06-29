@@ -1,15 +1,18 @@
 model Currency {
-    currencyId   Int            @id @default(autoincrement()) @db.UnsignedInt
-    code         String         @unique @db.VarChar(3)
-    name         String?        @db.VarChar(50)
-    exchangeRate ExchangeRate[]
-    client       Client[]
+  currencyId   String         @id @default(cuid())
+  code         String         @unique @db.VarChar(3)
+  name         String?        @db.VarChar(50)
+  exchangeRate ExchangeRate[]
+  client       Client[]
+  account      BankAccount[]
 }
 
 model ExchangeRate {
-    exchangeRateId Int      @id @default(autoincrement()) @db.UnsignedInt
-    date           DateTime @db.Timestamp(6)
-    rate           Decimal  @db.Decimal(9, 2)
-    currencyId     Int      @db.UnsignedInt
-    currency       Currency @relation(fields: [currencyId], references: [currencyId], onDelete: Cascade)
+  exchangeRateId String   @id @default(cuid())
+  date           DateTime @default(now()) @db.Timestamp(6)
+  rate           Decimal  @default(1.00) @db.Decimal(9, 2)
+  currencyId     String
+  currency       Currency @relation(fields: [currencyId], references: [currencyId], onDelete: Cascade)
+  payment        Payment?
+  invoice        Invoice?
 }

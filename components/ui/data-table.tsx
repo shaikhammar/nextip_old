@@ -56,7 +56,7 @@ export function DataTable<TData, TValue>({
         <Input
           value={globalFilter ?? ""}
           onChange={(value) => setGlobalFilter(value.target.value)}
-          placeholder="Search client with name or code..."
+          placeholder="Search all columns..."
           className="max-w-sm p-2 font-lg shadow border border-block"
         />
       </div>

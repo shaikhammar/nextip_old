@@ -1,6 +1,5 @@
 "use client";
 import ClientForm from "@/components/client-form";
-import { validateRequest } from "@/actions/auth.actions";
 import { useRouter } from "next/navigation";
 
 import { useState } from "react";

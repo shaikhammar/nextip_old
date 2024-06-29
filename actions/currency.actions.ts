@@ -1,7 +1,9 @@
 "use server"
 import db from "@/lib/db";
 import { ActionResult } from ".";
-import { currencyFormSchema, Currency } from "@/lib/types/currency";
+import { Currency } from "@/lib/types/currency";
+import { currencyFormSchema } from "@/components/currency-form"
+import { exchangeRateFormSchema } from "@/components/exchangerate-form"
 import { z } from "zod";
 
 export async function getCurrencies(): Promise<ActionResult> {
@@ -32,6 +34,26 @@ export async function setCurrency(newCurrency: z.infer<typeof currencyFormSchema
         console.log(error)
         return {
             error: error.message || "Error adding currency. Please try again after sometime."
+        }
+    }
+}
+
+export const setExchangeRate = async (values: z.infer<typeof exchangeRateFormSchema>) => {
+    try {
+        await db.exchangeRate.create({
+            data: {
+                rate: values.rate,
+                currency: {
+                    connect: {
+                        code: values.currency.code
+                    }
+                }
+            }
+        })
+    } catch (error: any) {
+        console.log(error)
+        return {
+            error: error.message || "Error adding exchange rate. Please try again after sometime."
         }
     }
 }

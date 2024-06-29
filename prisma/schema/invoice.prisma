@@ -1,0 +1,32 @@
+model Invoice {
+  invoiceId                String           @id @default(cuid())
+  invoiceNumber            String           @unique
+  invoiceDate              DateTime         @db.Timestamp(6)
+  poNumber                 String?
+  clientId                 Int              @db.UnsignedInt
+  client                   Client           @relation(fields: [clientId], references: [clientId], onDelete: NoAction, onUpdate: NoAction)
+  notes                    String?
+  status                   InvoiceStatus    @default(Draft)
+  invoiceTotal             Decimal          @db.Decimal(10, 2)
+  baseCurrencyInvoiceTotal Decimal          @db.Decimal(10, 2)
+  exchangeRateId           String?          @unique
+  exchangeRate             ExchangeRate?    @relation(fields: [exchangeRateId], references: [exchangeRateId], onDelete: NoAction, onUpdate: NoAction)
+  createdAt                DateTime         @default(now()) @db.Timestamp(6)
+  updatedAt                DateTime?        @updatedAt @db.Timestamp(6)
+  deletedAt                DateTime?
+  isDeleted                Boolean          @default(false)
+  companyId                String
+  company                  Company          @relation(fields: [companyId], references: [companyId], onDelete: NoAction, onUpdate: NoAction)
+  invoiceLineItem          InvoiceItem[]
+  paymentInvoice           PaymentInvoice[]
+}
+
+enum InvoiceStatus {
+  Draft
+  Sent
+  Paid
+  PartiallyPaid
+  Revised
+  Cancelled
+  Deleted
+}

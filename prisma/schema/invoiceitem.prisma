@@ -1,0 +1,12 @@
+model InvoiceItem {
+    invoiceItemId   String   @id @default(cuid())
+    itemOrder       Int
+    invoiceId       String
+    invoice         Invoice  @relation(fields: [invoiceId], references: [invoiceId], onDelete: NoAction, onUpdate: NoAction)
+    itemDescription String   @db.LongText
+    itemUnitCost    Decimal  @db.Decimal(10, 2)
+    itemQuantity    Decimal  @db.Decimal(10, 2)
+    itemTotal       Decimal  @db.Decimal(10, 2)
+    createdAt       DateTime @default(now()) @db.Timestamp(6)
+    updatedAt       DateTime @updatedAt @db.Timestamp(6)
+}
